@@ -9,12 +9,31 @@
 </head>
 <body>
 
-<header>
-    <div class="logo-container"><img src="logo.png" alt="RayenBody Logo"></div>
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="¿Qué estás buscando hoy?" onkeyup="ejecutarFiltros()">
+<nav class="top-nav">
+    <div class="nav-container">
+<a href="index.html" class="rb-logo-link">
+    <img src="https://lh3.googleusercontent.com/u/0/d/1lG0Gl11ufdgQZi41L3tZxlvoauuSnTx7" alt="RayenBody">
+</a>
+
+<div class="rb-search-box">
+            <div class="rb-search-inner">
+                <svg class="rb-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ff3399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" placeholder="Buscar productos..." onkeyup="ejecutarFiltros()">
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-item active">Inicio</a>
+            <a href="pqrs.html" class="nav-item">PQRS</a>
+            <a href="pqrs.html" class="nav-item">NOSOTROS</a>
+        </div>
     </div>
-</header>
+</nav>
+
+<header style="padding: 20px 0;"></header>
 
 <div class="layout">
     <aside>

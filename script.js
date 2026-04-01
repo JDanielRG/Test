@@ -2,6 +2,8 @@ const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_RxbQZQ0nDUult_rj
 let carrito = [];
 let categoriaActual = 'todos'; // Variable global para el filtro
 
+let intervaladorPromo; // Variable global para el contador
+
 async function init() {
     try {
         const res = await fetch(url);
@@ -15,6 +17,7 @@ async function init() {
         let cats = new Set();
         let promosHtml = '';
         let prodsHtml = '';
+        let fechaFinPromo = null; // Para guardar la fecha de expiración
 
         rows.forEach((row, index) => {
             if(!row[0] || row[0].trim() === "") return;
@@ -25,50 +28,100 @@ async function init() {
                 name: row[1].trim(),
                 price: parseFloat(row[2]?.replace(/[^0-9.-]+/g,"")) || 0,
                 now: parseFloat(row[3]?.replace(/[^0-9.-]+/g,"")) || 0,
-                desc: row[5]?.trim() || ''
+                presentacion: row[4]?.trim() || '',
+                desc: row[5]?.trim() || '',
+                vencimiento: row[6]?.trim() || '' // Nueva Columna 7
             };
 
             const precioFinal = item.now > 0 ? item.now : item.price;
 
             if(item.cat.toLowerCase().includes('promocion')) {
+                // --- LÓGICA DE VENCIMIENTO ---
+                if(item.vencimiento) {
+                    const partes = item.vencimiento.split('/');
+                    // Formato: Año, Mes (0-11), Día, Hora
+                    const fechaExp = new Date(partes[2], partes[1] - 1, partes[0], 23, 59, 59);
+                    const ahora = new Date();
+
+                    if (fechaExp < ahora) return; // Si ya pasó, no se agrega al HTML
+                    
+                    // Guardamos la fecha más próxima para el cronómetro
+                    if (!fechaFinPromo || fechaExp < fechaFinPromo) {
+                        fechaFinPromo = fechaExp;
+                    }
+                }
+
                 promosHtml += `
                     <div class="promo-card" data-name="${item.name.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
-                        <h4 style="color:var(--deep-magenta); font-size:1.2rem;">${item.name}</h4>
-                        <p class="desc-text">${item.desc}</p>
-                        <div style="margin: 15px 0;">
-                            <span class="price-before">$${item.price}</span>
-                            <span class="price-now">$${item.now}</span>
+                        <div style="flex: 1;">
+                            <h4 style="color:var(--deep-magenta); font-size:1.2rem; margin: 0;">${item.name}</h4>
+                            <span class="product-presentation">${item.presentacion}</span>
+                            <p class="product-description" style="-webkit-line-clamp: 2; margin-top:10px;">${item.desc}</p>
                         </div>
-                        <button class="btn-add" onclick="agregarAlCarrito('${item.name}', ${precioFinal})">Aprovechar Oferta</button>
+                        <div class="price-container">
+                            <div>
+                                <span class="price-before" style="display: block; font-size: 0.8rem;">$${item.price.toLocaleString()}</span>
+                                <span class="price-now">$${item.now.toLocaleString()}</span>
+                            </div>
+                            <button class="btn-add" onclick="agregarAlCarrito('${item.name}', ${precioFinal})">+</button>
+                        </div>
                     </div>`;
             } else {
                 cats.add(item.cat);
                 prodsHtml += `
                     <div class="product-card" data-cat="${item.cat}" data-name="${item.name.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
-                        <span style="font-size:0.6rem; color:var(--hot-pink); font-weight:800;">${item.cat.toUpperCase()}</span>
-                        <h4 style="margin: 8px 0; min-height:40px;">${item.name}</h4>
-                        <div class="price-now" style="margin-top:auto;">$${item.price}</div>
-                        <button class="btn-add" onclick="agregarAlCarrito('${item.name}', ${item.price})">Añadir al Carrito</button>
+                        <h4>${item.name}</h4>
+                        <span class="product-presentation">${item.presentacion}</span>
+                        <p class="product-description" style="margin-top:10px;">${item.desc}</p>
+                        <div class="price-container">
+                            <div class="price-now">$${item.price.toLocaleString()}</div>
+                            <button class="btn-add" onclick="agregarAlCarrito('${item.name}', ${item.price})">+</button>
+                        </div>
                     </div>`;
             }
         });
 
+        // Renderizado de Promociones con el Cronómetro al lado del título
         if(promosHtml) {
             promoContainer.innerHTML = `
                 <div class="promo-banner">
-                    <h2 style="text-align:center; color:var(--deep-magenta); margin-bottom:20px;">✨ Ofertas ✨</h2>
+                    <div style="display:flex; justify-content:center; align-items:center; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+                        <h2 style="color:var(--deep-magenta); margin:0;">✨ Ofertas ✨</h2>
+                        <div id="promo-timer" style="background:var(--hot-pink); color:white; padding:5px 15px; border-radius:50px; font-weight:bold; font-size:0.9rem;">
+                            Cargando...
+                        </div>
+                    </div>
                     <div class="promo-grid">${promosHtml}</div>
                 </div>`;
+            
+            if(fechaFinPromo) iniciarCronometro(fechaFinPromo);
+        } else {
+            promoContainer.innerHTML = ''; // Si no hay promos vigentes, se limpia la sección
         }
         
         prodContainer.innerHTML = prodsHtml;
-        
-        // Limpiar categorías previas (excepto "Ver Todo") y agregar las nuevas
-        const btnTodos = catNav.querySelector('button[data-cat="todos"]');
+
+        // --- CATEGORÍAS ---
         catNav.innerHTML = '';
+        
+        // Botón Ver Todo
+        const btnTodos = document.createElement('button');
+        btnTodos.className = 'filter-btn active';
+        btnTodos.innerText = 'Ver Todo';
+        btnTodos.onclick = (e) => seleccionarCategoria('todos', e.target);
         catNav.appendChild(btnTodos);
+
+        // Botón Promociones (Solo si hay promos vigentes)
+        if(promosHtml) {
+            const btnPromos = document.createElement('button');
+            btnPromos.className = 'filter-btn';
+            btnPromos.innerText = 'Promociones';
+            btnPromos.onclick = (e) => seleccionarCategoria('promociones', e.target);
+            catNav.appendChild(btnPromos);
+        }
         
         cats.forEach(c => {
+            if(c.toLowerCase().includes('promocion')) return;
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
             btn.innerText = c;
@@ -79,6 +132,32 @@ async function init() {
     } catch(e) {
         console.error("Error cargando el catálogo:", e);
     }
+}
+
+// --- FUNCIÓN DEL CRONÓMETRO ---
+function iniciarCronometro(destino) {
+    if(intervaladorPromo) clearInterval(intervaladorPromo);
+
+    intervaladorPromo = setInterval(() => {
+        const ahora = new Date().getTime();
+        const diferencia = destino - ahora;
+
+        if (diferencia <= 0) {
+            clearInterval(intervaladorPromo);
+            document.getElementById('seccion-promociones').innerHTML = '';
+            return;
+        }
+
+        const d = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+        const timerDisplay = document.getElementById('promo-timer');
+        if(timerDisplay) {
+            timerDisplay.innerHTML = `Termina en: ${d}d ${h}h ${m}m ${s}s`;
+        }
+    }, 1000);
 }
 
 // --- LÓGICA DE FILTROS (REPARADA) ---
@@ -102,43 +181,42 @@ function seleccionarCategoria(cat, btn) {
 
 function ejecutarFiltros() {
     const query = document.getElementById('search-input').value.toLowerCase().trim();
-    
-    // 1. Filtrar Productos del Catálogo
     const productos = document.querySelectorAll('.product-card');
+    const bannerPromos = document.querySelector('.promo-banner');
+    const promoCards = document.querySelectorAll('.promo-card');
+
+    // Lógica para el Banner de Promociones
+    // Solo se muestra si la categoría es 'todos' o 'promociones'
+    const mostrarSeccionPromos = (categoriaActual === 'todos' || categoriaActual === 'promociones');
+    
+    if (bannerPromos) {
+        let promosVisibles = 0;
+        promoCards.forEach(promo => {
+            const matchesSearch = promo.getAttribute('data-name').includes(query) || 
+                                  promo.getAttribute('data-desc').includes(query);
+            
+            // La tarjeta individual se muestra si coincide con la búsqueda Y la categoría lo permite
+            const visible = mostrarSeccionPromos && matchesSearch;
+            promo.classList.toggle('hidden', !visible);
+            if(visible) promosVisibles++;
+        });
+
+        // Ocultar todo el bloque si no hay promos que mostrar
+        bannerPromos.classList.toggle('hidden', promosVisibles === 0);
+    }
+
+    // Lógica para Productos Normales
     productos.forEach(p => {
         const pCat = p.getAttribute('data-cat');
         const pName = p.getAttribute('data-name');
         const pDesc = p.getAttribute('data-desc');
 
-        const coincideCat = (categoriaActual === 'todos' || pCat === categoriaActual);
+        // Si elegimos 'promociones', ocultamos todos los productos normales
+        const coincideCat = (categoriaActual === 'promociones') ? false : (categoriaActual === 'todos' || pCat === categoriaActual);
         const coincideBusqueda = (pName.includes(query) || pDesc.includes(query));
 
         p.classList.toggle('hidden', !(coincideCat && coincideBusqueda));
     });
-
-    // 2. Filtrar Promociones
-    const promociones = document.querySelectorAll('.promo-card');
-    let promosVisibles = 0;
-
-    promociones.forEach(promo => {
-        const promoName = promo.getAttribute('data-name');
-        const promoDesc = promo.getAttribute('data-desc');
-        
-        const coincideBusqueda = (promoName.includes(query) || promoDesc.includes(query));
-        
-        if (coincideBusqueda) {
-            promo.classList.remove('hidden');
-            promosVisibles++;
-        } else {
-            promo.classList.add('hidden');
-        }
-    });
-
-    // 3. Ocultar el contenedor completo de promociones si ninguna coincide
-    const bannerPromos = document.querySelector('.promo-banner');
-    if (bannerPromos) {
-        bannerPromos.classList.toggle('hidden', promosVisibles === 0);
-    }
 }
 
 // --- LÓGICA DEL CARRITO (MANTENIDA) ---
