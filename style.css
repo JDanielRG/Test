@@ -1,0 +1,191 @@
+:root {
+    --hot-pink: #ff3399;
+    --soft-pink: #fff0f6;
+    --deep-magenta: #990066;
+    --glass: rgba(255, 255, 255, 0.8);
+    --text-dark: #2d0a1a;
+    --shadow: 0 10px 30px rgba(255, 51, 153, 0.1);
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    background: radial-gradient(circle at top right, #fff5f8, #ffe0f0);
+    color: var(--text-dark);
+}
+
+header { text-align: center; padding: 40px 10px; }
+
+/* LOGO MÁS GRANDE */
+.logo-container img { 
+    max-width: 320px; /* Incrementado de 280px */
+    width: 90%; /* Asegura que no se desborde en pantallas muy pequeñas */
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(255, 51, 153, 0.2)); 
+}
+
+.search-container { margin: 0 auto 30px; max-width: 500px; padding: 0 20px; }
+#search-input {
+    width: 100%; padding: 15px 25px; border-radius: 50px; border: 2px solid white;
+    background: var(--glass); backdrop-filter: blur(10px);
+    box-shadow: var(--shadow); font-size: 16px; outline: none; transition: 0.3s;
+}
+
+.layout { display: flex; flex-direction: column; padding: 0 20px 50px; max-width: 1400px; margin: auto; gap: 30px; }
+
+/* CATEGORÍAS: HORIZONTALES EN MÓVIL */
+aside { 
+    width: 100%; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    background: rgba(255, 240, 246, 0.9); 
+    backdrop-filter: blur(8px); 
+}
+aside h2 { display: none; }
+
+#lista-categorias { 
+    display: flex; 
+    flex-direction: row; /* Horizontal por defecto */
+    overflow-x: auto; 
+    gap: 12px; 
+    padding: 15px; 
+    scrollbar-width: none; 
+}
+#lista-categorias::-webkit-scrollbar { display: none; }
+
+.filter-btn {
+    flex: 0 0 auto; padding: 12px 22px; border: 1px solid white;
+    background: var(--glass); border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s;
+}
+.filter-btn.active { background: linear-gradient(135deg, var(--hot-pink), var(--deep-magenta)); color: white; border: none; }
+
+/* PROMOCIONES: UNA AL LADO DE LA OTRA (GRID) */
+.promo-banner {
+    background: white; border-radius: 35px; padding: 30px; 
+    border: 1px solid rgba(255, 51, 153, 0.1); margin-bottom: 40px;
+    box-shadow: var(--shadow);
+}
+.promo-grid { 
+    display: grid; 
+    /* En móvil se ajustan solas, en escritorio forzamos horizontal */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px; 
+}
+
+.promo-card {
+    background: linear-gradient(135deg, #ffffff, var(--soft-pink));
+    padding: 25px; border-radius: 25px; border: 1px solid white;
+    transition: 0.4s; position: relative; overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* GRILLA DE PRODUCTOS */
+.product-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px; 
+}
+.product-card { 
+    background: var(--glass); padding: 20px; border-radius: 25px; border: 1px solid white;
+    display: flex; flex-direction: column; transition: 0.4s ease;
+}
+
+.price-now { color: var(--hot-pink); font-size: 1.4rem; font-weight: 900; }
+.btn-add {
+    background: var(--text-dark); color: white; border: none; padding: 12px;
+    border-radius: 15px; cursor: pointer; font-weight: 700;
+}
+
+.hidden { display: none !important; }
+
+/* --- VISTA DE ESCRITORIO --- */
+@media (min-width: 992px) {
+    .layout { flex-direction: row; align-items: flex-start; }
+    
+    /* Categorías Verticales en Escritorio */
+    aside { 
+        width: 280px; 
+        position: sticky; 
+        top: 20px; 
+        background: var(--glass); 
+        border-radius: 30px; 
+        padding: 25px; 
+        backdrop-filter: blur(10px);
+    }
+    aside h2 { display: block; margin: 0 0 20px; color: var(--deep-magenta); font-size: 1.2rem; }
+    
+    #lista-categorias { 
+        flex-direction: column; /* Cambia a vertical */
+        overflow-x: visible; 
+        padding: 0; 
+    }
+    
+    .filter-btn { width: 100%; text-align: left; }
+
+    /* Promociones horizontales amplias */
+    .promo-grid { 
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    }
+    
+    .product-grid { 
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+    }
+}
+
+/* --- ESTILOS DEL CARRITO --- */
+#cart-floating-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-dark);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 400px;
+    z-index: 999;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.cart-btn-hidden { bottom: -100px !important; }
+
+#cart-drawer {
+    position: fixed;
+    top: 0; right: -100%;
+    width: 100%; max-width: 450px;
+    height: 100%;
+    background: white;
+    z-index: 1001;
+    transition: 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+}
+
+.drawer-opened { right: 0 !important; }
+
+.drawer-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-dark); }
+
+#cart-items-container { flex: 1; overflow-y: auto; padding: 20px; }
+
+.cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9; }
+.cart-item-info h5 { margin: 0; font-size: 1rem; }
+.cart-item-qty { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+.qty-btn { background: var(--soft-pink); border: none; width: 25px; height: 25px; border-radius: 5px; cursor: pointer; }
+
+.drawer-footer { padding: 25px; background: var(--soft-pink); border-top-left-radius: 30px; border-top-right-radius: 30px; }
+.shipping-info input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid white; outline: none; box-sizing: border-box; }
+.total-section { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; margin: 15px 0; color: var(--deep-magenta); }
+
+.btn-order { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #25D366; color: white; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+#overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
