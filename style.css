@@ -1,0 +1,678 @@
+
+
+:root {
+    --hot-pink: #ff3399;
+    --soft-pink: #fff0f6;
+    --deep-magenta: #990066;
+    --glass: rgba(255, 255, 255, 0.8);
+    --text-dark: #2d0a1a;
+    --shadow: 0 10px 30px rgba(255, 51, 153, 0.1);
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0; 
+    background: radial-gradient(circle at top right, #fff5f8, #ffe0f0);
+    color: var(--text-dark);
+}
+
+header { text-align: center; padding: 40px 10px; }
+
+/* LOGO MÁS GRANDE */
+.logo-container img { 
+    max-width: 320px; /* Incrementado de 280px */
+    width: 90%; /* Asegura que no se desborde en pantallas muy pequeñas */
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(255, 51, 153, 0.2)); 
+}
+
+.search-container { margin: 0 auto 30px; max-width: 500px; padding: 0 20px; }
+#search-input {
+    width: 100%; padding: 15px 25px; border-radius: 50px; border: 2px solid white;
+    background: var(--glass); backdrop-filter: blur(10px);
+    box-shadow: var(--shadow); font-size: 16px; outline: none; transition: 0.3s;
+}
+
+.layout { display: flex; flex-direction: column; padding: 0 20px 50px; max-width: 1400px; margin: auto; gap: 30px; }
+
+/* CATEGORÍAS: HORIZONTALES EN MÓVIL */
+aside { 
+    width: 100%; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    background: rgba(255, 240, 246, 0.9); 
+    backdrop-filter: blur(8px); 
+}
+aside h2 { display: none; }
+
+#lista-categorias { 
+    display: flex; 
+    flex-direction: row; /* Horizontal por defecto */
+    overflow-x: auto; 
+    gap: 12px; 
+    padding: 15px; 
+    scrollbar-width: none; 
+}
+#lista-categorias::-webkit-scrollbar { display: none; }
+
+.filter-btn {
+    flex: 0 0 auto; padding: 12px 22px; border: 1px solid white;
+    background: var(--glass); border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s;
+}
+.filter-btn.active { background: linear-gradient(135deg, var(--hot-pink), var(--deep-magenta)); color: white; border: none; }
+
+/* PROMOCIONES: UNA AL LADO DE LA OTRA (GRID) */
+.promo-banner {
+    background: white; border-radius: 35px; padding: 30px; 
+    border: 1px solid rgba(255, 51, 153, 0.1); margin-bottom: 40px;
+    box-shadow: var(--shadow);
+}
+.promo-grid { 
+    display: grid; 
+    /* En móvil se ajustan solas, en escritorio forzamos horizontal */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px; 
+}
+
+.promo-card {
+    background: linear-gradient(135deg, #ffffff, var(--soft-pink));
+    padding: 25px; border-radius: 25px; border: 1px solid white;
+    transition: 0.4s; position: relative; overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* GRILLA DE PRODUCTOS */
+.product-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px; 
+}
+.product-card { 
+    background: var(--glass); padding: 20px; border-radius: 25px; border: 1px solid white;
+    display: flex; flex-direction: column; transition: 0.4s ease;
+}
+
+.price-now { color: var(--hot-pink); font-size: 1.4rem; font-weight: 900; }
+/* --- BOTÓN DE CARRITO ESTILIZADO --- */
+.btn-add {
+    background: var(--hot-pink); /* Color #ff3399 */
+    color: white; 
+    border: none; 
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; /* Totalmente circular */
+    cursor: pointer; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(255, 51, 153, 0.3);
+    font-size: 1.2rem;
+}
+
+.btn-add:hover {
+    transform: scale(1.15) rotate(-10deg);
+    background: var(--deep-magenta);
+    box-shadow: 0 8px 20px rgba(255, 51, 153, 0.5);
+}
+
+.btn-add:active {
+    transform: scale(0.95);
+}
+
+/* Ajuste en el contenedor de precio para que el círculo encaje bien */
+.price-container {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 51, 153, 0.1);
+}
+
+.hidden { display: none !important; }
+
+/* --- VISTA DE ESCRITORIO --- */
+@media (min-width: 992px) {
+    .layout { flex-direction: row; align-items: flex-start; }
+    
+    /* Categorías Verticales en Escritorio */
+    aside { 
+        width: 280px; 
+        position: sticky; 
+        top: 20px; 
+        background: var(--glass); 
+        border-radius: 30px; 
+        padding: 25px; 
+        backdrop-filter: blur(10px);
+    }
+    aside h2 { display: block; margin: 0 0 20px; color: var(--deep-magenta); font-size: 1.2rem; }
+    
+    #lista-categorias { 
+        flex-direction: column; /* Cambia a vertical */
+        overflow-x: visible; 
+        padding: 0; 
+    }
+    
+    .filter-btn { width: 100%; text-align: left; }
+
+    /* Promociones horizontales amplias */
+    .promo-grid { 
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    }
+    
+    .product-grid { 
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+    }
+}
+
+/* --- ESTILOS DEL CARRITO --- */
+#cart-floating-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-dark);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 400px;
+    z-index: 999;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.cart-btn-hidden { bottom: -100px !important; }
+
+#cart-drawer {
+    position: fixed;
+    top: 0; right: -100%;
+    width: 100%; max-width: 450px;
+    height: 100%;
+    background: white;
+    z-index: 1001;
+    transition: 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+}
+
+.drawer-opened { right: 0 !important; }
+
+.drawer-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--text-dark); }
+
+#cart-items-container { flex: 1; overflow-y: auto; padding: 20px; }
+
+.cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f9f9f9; }
+.cart-item-info h5 { margin: 0; font-size: 1rem; }
+.cart-item-qty { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+.qty-btn { background: var(--soft-pink); border: none; width: 25px; height: 25px; border-radius: 5px; cursor: pointer; }
+
+.drawer-footer { padding: 25px; background: var(--soft-pink); border-top-left-radius: 30px; border-top-right-radius: 30px; }
+.shipping-info input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid white; outline: none; box-sizing: border-box; }
+.total-section { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; margin: 15px 0; color: var(--deep-magenta); }
+
+.btn-order { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #25D366; color: white; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+#overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
+
+/* --- MEJORA DE TARJETAS DE PRODUCTO --- */
+.product-card { 
+    background: rgba(255, 255, 255, 0.7); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 25px; 
+    border-radius: 30px; 
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex; 
+    flex-direction: column; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto al pasar el cursor (Hover) */
+.product-card:hover { 
+    transform: translateY(-12px) scale(1.02); 
+    box-shadow: 0 20px 40px rgba(255, 51, 153, 0.15); 
+    border-color: var(--hot-pink);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Estilo de la Categoría dentro del producto */
+.product-badge {
+    font-size: 0.65rem; 
+    letter-spacing: 1.5px; 
+    color: var(--hot-pink); 
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.product-card h4 {
+    margin: 5px 0 12px 0;
+    font-size: 1.15rem;
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+
+/* Descripción Detallada */
+.product-description {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Muestra máximo 3 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.3s;
+}
+
+.product-card:hover .product-description {
+    color: var(--text-dark);
+}
+
+/* Precio y Botón */
+.price-container {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-now { 
+    color: var(--deep-magenta); 
+    font-size: 1.5rem; 
+    font-weight: 900; 
+}
+
+
+/* Ajuste específico para que las promos y productos compartan el mismo layout inferior */
+.promo-card .price-container, 
+.product-card .price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Empuja el contenido al fondo de la tarjeta */
+    padding-top: 15px;
+}
+
+/* Forzar que el botón mantenga su tamaño circular incluso en grids apretados */
+.btn-add {
+    flex-shrink: 0; 
+    width: 48px;
+    height: 48px;
+    /* ... resto de estilos que ya tenías ... */
+}
+
+/* Estilo para el campo de Presentación */
+.product-presentation {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--hot-pink);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: -5px; /* Lo pega un poco más al título */
+    margin-bottom: 10px;
+}
+
+/* Retocamos el título para que no tenga tanto margen inferior ahora */
+.product-card h4, .promo-card h4 {
+    margin-bottom: 8px;
+}
+
+/* --- NAVEGACIÓN SUPERIOR --- */
+.top-nav {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 51, 153, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1100; /* Por encima de las categorías y el carrito */
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: center; /* Centrado para un look tipo boutique */
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.3s;
+    position: relative;
+    padding: 5px 0;
+}
+
+.nav-item:hover {
+    color: var(--hot-pink);
+}
+
+/* Indicador de página activa */
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--hot-pink);
+    transition: 0.3s;
+    transform: translateX(-50%);
+}
+
+.nav-item:hover::after, 
+.nav-item.active::after {
+    width: 100%;
+}
+
+.nav-item.active {
+    color: var(--hot-pink);
+}
+
+/* AJUSTE PARA EL HEADER */
+header {
+    padding-top: 20px; /* Reducimos un poco el padding superior ya que ahora hay menú */
+}
+
+/* Ajuste para que el buscador no tape el menú en móvil */
+@media (max-width: 992px) {
+    aside {
+        top: 60px; /* Se ajusta para que pegue justo debajo del menú al hacer scroll */
+    }
+}
+
+/* --- BUSCADOR CENTRADO CON LUPA --- */
+.search-container { 
+    margin: 0 auto 40px; 
+    max-width: 600px; /* Un poco más ancho para mejor balance */
+    padding: 0 20px;
+    display: flex;
+    justify-content: center; /* Asegura centrado horizontal */
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#search-input {
+    width: 100%; 
+    padding: 15px 25px 15px 55px; /* Más padding a la izquierda para la lupa */
+    border-radius: 50px; 
+    border: 2px solid white;
+    background: var(--glass); 
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow); 
+    font-size: 16px; 
+    outline: none; 
+    transition: 0.3s;
+    color: var(--text-dark);
+}
+
+#search-input:focus { 
+    border-color: var(--hot-pink); 
+    background: white;
+    box-shadow: 0 15px 35px rgba(255, 51, 153, 0.15);
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    font-size: 1.2rem;
+    color: var(--hot-pink);
+    pointer-events: none; /* Para que al hacer clic en la lupa se active el input */
+    filter: grayscale(1) opacity(0.6); /* Hace que el emoji combine con el estilo luxury */
+}
+
+/* Ajuste para que el header no tenga espacios extraños */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 10px 20px;
+}
+
+/* --- NAVEGACIÓN INTEGRADA --- */
+.top-nav {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 51, 153, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    padding: 10px 0;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribuye Logo - Buscador - Links */
+    gap: 30px;
+}
+
+/* LOGO EN EL MENÚ */
+.nav-logo img {
+    height: 50px; /* Tamaño controlado para que no rompa el menú */
+    width: auto;
+    transition: 0.3s;
+}
+
+/* BUSCADOR INTEGRADO */
+.search-wrapper {
+    position: relative;
+    flex: 1; /* Toma el espacio central disponible */
+    max-width: 500px;
+}
+
+.search-icon-svg {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff3399' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px 15px 10px 45px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 51, 153, 0.2);
+    background: white;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+#search-input:focus {
+    border-color: var(--hot-pink);
+    box-shadow: 0 5px 15px rgba(255, 51, 153, 0.1);
+}
+
+/* LINKS */
+.nav-links {
+    display: flex;
+    gap: 25px;
+    white-space: nowrap;
+}
+
+.nav-item {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--hot-pink);
+}
+
+/* --- RESPONSIVO PARA MÓVIL --- */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column; /* Apila elementos en móvil */
+        gap: 15px;
+        padding: 15px 20px;
+    }
+    
+    .search-wrapper {
+        max-width: 100%;
+        order: 3; /* El buscador va abajo en móvil */
+    }
+    
+    .nav-logo { order: 1; }
+    .nav-links { order: 2; gap: 40px; }
+    
+    aside {
+        top: 180px; /* Ajuste para que las categorías no tapen el menú alto de móvil */
+    }
+}
+
+/* --- NUEVA BARRA DE NAVEGACIÓN RAYENBODY --- */
+.rb-navbar {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 51, 153, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    padding: 12px 0;
+}
+
+.rb-nav-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.rb-logo-link img {
+    height: 45px;
+    width: auto;
+    display: block;
+}
+
+/* CAJA DE BÚSQUEDA BLINDADA */
+.rb-search-box {
+    flex: 1;
+    max-width: 500px;
+}
+
+.rb-search-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.rb-search-icon {
+    position: absolute;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    z-index: 10;
+    pointer-events: none; /* Permite hacer clic a través del icono */
+}
+
+#search-input {
+    width: 100%;
+    height: 45px;
+    padding: 0 20px 0 48px !important; /* Forzamos el padding para la lupa */
+    border-radius: 50px;
+    border: 2px solid #fff0f6;
+    background: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(255, 51, 153, 0.05);
+    box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+}
+
+#search-input:focus {
+    border-color: var(--hot-pink);
+    box-shadow: 0 6px 15px rgba(255, 51, 153, 0.12);
+}
+
+/* LINKS DEL MENÚ */
+.rb-nav-menu {
+    display: flex;
+    gap: 25px;
+}
+
+.rb-link {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 0;
+    position: relative;
+}
+
+.rb-link.active, .rb-link:hover {
+    color: var(--hot-pink);
+}
+
+/* --- RESPONSIVO MÓVIL --- */
+@media (max-width: 850px) {
+    .rb-nav-container {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .rb-search-box {
+        order: 3;
+        min-width: 100%;
+    }
+    .rb-logo-link { order: 1; }
+    .rb-nav-menu { order: 2; }
+    
+    /* Ajuste de espacio para las categorías que vienen después */
+    aside { top: 140px !important; } 
+}
+
